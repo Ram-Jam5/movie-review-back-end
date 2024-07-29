@@ -48,7 +48,7 @@ const movieSchema = new mongoose.Schema(
             enum: ['Action', 'Animation', 'Comedy', 'Drama', 'Horror', 'Musical', 'Romance', 'Science-Fiction', 'Thriller', 'Western' ],
         },
         year: {
-            type: year,
+            type: Number, // changed from year to Number
             required: true,
         },
         author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
