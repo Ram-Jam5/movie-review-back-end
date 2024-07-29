@@ -140,16 +140,15 @@ router.put('/:movieId/:reviewId', async (req ,res) => {
 router.delete('/:movieId/:reviewId', async (req, res) => {
     try {
         const movie = await Movie.findById(req.params.movieId);
-        const review = movie.reviews.id(req.params.reviewId);
-
+        const review = movie.reviews.id(req.params.reviewId)
         if (!review.author.equals(req.user._id)) {
             return res.status(403).send("You're not allowed to do that");
         }
-
-        review.remove();
-
+        console.log('before removal:', movie.reviews);
+        movie.reviews.pull(req.params.reviewId);
+        console.log('After removal:', movie.reviews)
         await movie.save();
-        res.status(200).json({ message: "Review deleted successfully! "});
+        res.status(200).json({ review: review });
     } catch (error) {
         console.log(error);
         res.status(500).json(error);    
