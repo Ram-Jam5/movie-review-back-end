@@ -153,6 +153,23 @@ router.delete('/:movieId/:reviewId', async (req, res) => {
         console.log(error);
         res.status(500).json(error);    
     }
+});
+
+router.post('/:movieId/:reviewId/comments', async (req, res) => {
+    try {
+        req.body.author = req.user._id;
+        const movie = await Movie.findById(req.params.movieId);
+        const review = movie.reviews.id(req.params.reviewId)
+        console.log(review.comments)
+        review.comments.push(req.body);
+        console.log(review.comments)
+        await movie.save();
+        const newComment = review.comments[review.comments.length -1];
+        newComment._doc.author = req.user;
+        res.status(200).json(newComment);
+    } catch (error) {
+        res.status(500).json(error)
+    }
 })
         
 
