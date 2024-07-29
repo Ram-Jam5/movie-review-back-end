@@ -103,6 +103,19 @@ router.get('/:movieId', async (req, res) => {
     }
 })
 
+//SHOW REVIEW
+// returns a particular review based on a particular reviewId
+router.get('/:movieId/:reviewId', async (req, res) => {
+    try {
+        const movie = await Movie.findById(req.params.movieId).populate('reviews.author');
+        const reviews = movie.reviews;
+        res.status(200).json(reviews);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error)
+    }
+})
+
 // PUT REVIEW
 router.put('/:movieId/:reviewId', async (req ,res) => {
     try {
@@ -142,5 +155,7 @@ router.delete('/:movieId/:reviewId', async (req, res) => {
         res.status(500).json(error);    
     }
 })
+        
+
 
 module.exports = router // keep at bottom of file
