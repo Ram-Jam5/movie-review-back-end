@@ -186,4 +186,21 @@ router.put('/:movieId/:reviewId/comments/:commentId', async (req, res) => {
     }
 })
 
+// Deleting a comment
+router.delete('/:movieId/:reviewId/comments/:commentId', async (req, res) => {
+    try {
+        const movie = await Movie.findById(req.params.movieId);
+        const review = movie.reviews.id(req.params.reviewId);
+        const comment = review.comments.id(req.params.commentId);
+        if (!comment.author.equals(req.user._id)) {
+            return res.status(403).send("You're not allowed to do that")
+        }
+        review.comments.pull(req.params.commentId);
+        await movie.save();
+        res.status(200).json(comment)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
 module.exports = router // keep at bottom of file
