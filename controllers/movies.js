@@ -9,7 +9,7 @@ const router = express.Router();
 router.use(verifyToken); // keep at top of PROTECTED ROUTES
 
 // POST MOVIE, required: title, director, category, year
-router.post('/', async (req, res) => {
+router.post('/new', async (req, res) => {
     try {
         req.body.author = req.user._id;
         const movie = await Movie.create(req.body); // create Movie document
