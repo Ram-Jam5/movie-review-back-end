@@ -172,6 +172,18 @@ router.post('/:movieId/:reviewId/comments', async (req, res) => {
     }
 })
         
-
+// Updating a comment
+router.put('/:movieId/:reviewId/comments/:commentId', async (req, res) => {
+    try {
+        const movie = await Movie.findById(req.params.movieId);
+        const review = movie.reviews.id(req.params.reviewId)
+        const comment = review.comments.id(req.params.commentId);
+        comment.text = req.body.text;
+        await movie.save();
+        res.status(200).json(comment)
+    } catch (error) {
+        res.status(500).json(error)       
+    }
+})
 
 module.exports = router // keep at bottom of file
