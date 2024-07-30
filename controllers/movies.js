@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
 })
 
 // PUT MOVIE
-router.put('/:movieId', async (req ,res) => {
+router.put('/:movieId/edit', async (req ,res) => {
     try {
         const movie = await Movie.findById(req.params.movieId);
 
