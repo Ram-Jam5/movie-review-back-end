@@ -9,7 +9,7 @@ const router = express.Router();
 router.use(verifyToken); // keep at top of PROTECTED ROUTES
 
 // POST MOVIE, required: title, director, category, year
-router.post('/new', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         req.body.author = req.user._id;
         const movie = await Movie.create(req.body); // create Movie document
@@ -96,7 +96,7 @@ router.get('/:movieId', async (req, res) => {
     try {
         const movie = await Movie.findById(req.params.movieId).populate('reviews.author');
         const reviews = movie.reviews;
-        res.status(200).json(reviews);
+        res.status(200).json(movie);
     } catch (error) {
         console.log(error);
         res.status(500).json(error);
@@ -109,7 +109,7 @@ router.get('/:movieId/:reviewId', async (req, res) => {
     try {
         const movie = await Movie.findById(req.params.movieId).populate('reviews.author');
         const reviews = movie.reviews;
-        res.status(200).json(reviews);
+        res.status(200).json(movie);
     } catch (error) {
         console.log(error);
         res.status(500).json(error)
@@ -129,7 +129,7 @@ router.put('/:movieId/:reviewId', async (req ,res) => {
         review.set(req.body);
 
         await movie.save();
-        res.status(200).json(review);
+        res.status(200).json(movie);
     } catch (error) {
         console.log(error);
         res.status(500).json(error);    
