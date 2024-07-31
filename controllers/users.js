@@ -40,4 +40,15 @@ router.post('/signin', async (req, res) => {
     }
 });
 
+router.get('/', async (req, res) => {
+    try {
+        const users = await User.find({})
+            .populate('username')
+            .sort({ createdAt: 'desc' });
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
 module.exports = router;
