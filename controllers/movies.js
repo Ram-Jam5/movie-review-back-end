@@ -77,7 +77,8 @@ router.delete('/:movieId', async (req, res) => {
 router.post('/:movieId', async (req, res) => {
     try {
         req.body.author = req.user._id;
-        const movie = await Movie.findById(req.params.movieId); // find Movie
+        const movie = await Movie.findById(req.params.movieId)
+         // find Movie
         movie.reviews.push(req.body);
         await movie.save();
         const newReview = movie.reviews[movie.reviews.length - 1];
