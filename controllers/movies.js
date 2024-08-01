@@ -78,7 +78,8 @@ router.delete('/:movieId', async (req, res) => {
 router.post('/:movieId', async (req, res) => {
     try {
         req.body.author = req.user._id;
-        const movie = await Movie.findById(req.params.movieId); // find Movie
+        const movie = await Movie.findById(req.params.movieId)
+         // find Movie
         movie.reviews.push(req.body);
         await movie.save();
         const newReview = movie.reviews[movie.reviews.length - 1];
@@ -94,7 +95,8 @@ router.post('/:movieId', async (req, res) => {
 // returns all reviews under a movie
 router.get('/:movieId', async (req, res) => {
     try {
-        const movie = await Movie.findById(req.params.movieId).populate('reviews.author');
+        const movie = await Movie.findById(req.params.movieId).populate('author');
+        console.log(movie)
         const reviews = movie.reviews;
         res.status(200).json(movie);
     } catch (error) {
