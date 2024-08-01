@@ -51,4 +51,12 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/:userId', async (req, res) => {
+    try {
+        
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
 module.exports = router;
