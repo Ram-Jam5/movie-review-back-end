@@ -1,6 +1,6 @@
 const express = require('express');
 const verifyToken = require('../middleware/verify-token.js');
-const Movie = require('../models/movie.js');
+const { Movie, User } = require('../models/movie');
 const router = express.Router();
 
 // === PUBLIC ROUTES ===
@@ -77,12 +77,15 @@ router.delete('/:movieId', async (req, res) => {
 router.post('/:movieId', async (req, res) => {
     try {
         req.body.author = req.user._id;
-        const movie = await Movie.findById(req.params.movieId)
-         // find Movie
+        const movie = await Movie.findById(req.params.movieId); // find Movie
+        const user = await User.findById(req.body.author); // find user
         movie.reviews.push(req.body);
         await movie.save();
         const newReview = movie.reviews[movie.reviews.length - 1];
         newReview._doc.author = req.user;
+        user.userReviews.push(newReview); // push in to userReviews
+        await user.save();
+        console.log(user); // CONSOLE LOG
         res.status(201).json(newReview);
     } catch (error) {
         console.log(error);
@@ -124,14 +127,18 @@ router.put('/:movieId/:reviewId', async (req ,res) => {
     try {
         const movie = await Movie.findById(req.params.movieId);
         const review = movie.reviews.id(req.params.reviewId);
+        const user = await User.findById(req.user._id); // find user
 
         if (!review.author.equals(req.user._id)) {
             return res.status(403).send("You're not allowed to do that");
         }
 
         review.set(req.body);
-
         await movie.save();
+
+        user.userReviews.id(reviewId).set(req.body);
+        await user.save();
+
         res.status(200).json(movie);
     } catch (error) {
         console.log(error);
@@ -139,7 +146,7 @@ router.put('/:movieId/:reviewId', async (req ,res) => {
     }
 })
 
-// DELETE REVIEW, UNDER CONSTRUCTION
+// DELETE REVIEW
 router.delete('/:movieId/:reviewId', async (req, res) => {
     try {
         const movie = await Movie.findById(req.params.movieId);
@@ -147,10 +154,14 @@ router.delete('/:movieId/:reviewId', async (req, res) => {
         if (!review.author.equals(req.user._id)) {
             return res.status(403).send("You're not allowed to do that");
         }
+        const user = await User.findById(review.author._id); // find user
+        user.userReviews.pull(req.params.reviewId); // delete from User reviews
+        await user.save();
         console.log('before removal:', movie.reviews);
         movie.reviews.pull(req.params.reviewId);
         console.log('After removal:', movie.reviews)
         await movie.save();
+        console.log(user); // CONSOLE LOG
         res.status(200).json({ review: review });
     } catch (error) {
         console.log(error);
@@ -163,12 +174,16 @@ router.post('/:movieId/:reviewId/comments/:commentId', async (req, res) => {
         req.body.author = req.user._id;
         const movie = await Movie.findById(req.params.movieId);
         const review = movie.reviews.id(req.params.reviewId)
+        const user = await User.findById(req.body.author); // find user
         console.log(review.comments)
         review.comments.push(req.body);
         console.log(review.comments)
         await movie.save();
         const newComment = review.comments[review.comments.length -1];
         newComment._doc.author = req.user;
+        user.userComments.push(newComment); // adds comment to userComments
+        await user.save();
+        console.log(user); // CONSOLE LOG
         res.status(200).json(newComment);
     } catch (error) {
         res.status(500).json(error)
@@ -181,8 +196,13 @@ router.put('/:movieId/:reviewId/comments/:commentId', async (req, res) => {
         const movie = await Movie.findById(req.params.movieId);
         const review = movie.reviews.id(req.params.reviewId)
         const comment = review.comments.id(req.params.commentId);
+        const user = await User.findById(req.user._id); // find user
         comment.text = req.body.text;
         await movie.save();
+
+        user.userComments.id(commentId).set(req.body);
+        await user.save();
+        
         res.status(200).json(comment)
     } catch (error) {
         res.status(500).json(error)       
@@ -195,11 +215,15 @@ router.delete('/:movieId/:reviewId/comments/:commentId', async (req, res) => {
         const movie = await Movie.findById(req.params.movieId);
         const review = movie.reviews.id(req.params.reviewId);
         const comment = review.comments.id(req.params.commentId);
+        const user = await User.findById(req.user._id); // find user
         if (!comment.author.equals(req.user._id)) {
             return res.status(403).send("You're not allowed to do that")
         }
+        user.userComments.pull(req.params.commentId)
+        await user.save();
         review.comments.pull(req.params.commentId);
         await movie.save();
+        console.log(user); // CONSOLE LOG
         res.status(200).json(comment)
     } catch (error) {
         res.status(500).json(error)

@@ -1,3 +1,5 @@
+/// to delete
+/*
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -10,6 +12,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    userReviews: { // key: reviewId, value: movieId
+        type: Map,
+        of: mongoose.Schema.Types.ObjectId,
+        default: new Map(),
+    },
+    userComments: { // key: commentId, value: reviewId
+        type: Map,
+        of: mongoose.Schema.Types.ObjectId,
+        default: new Map(),
+    },
 });
 
 userSchema.set('toJSON', {
@@ -19,3 +31,4 @@ userSchema.set('toJSON', {
 });
 
 module.exports = mongoose.model('User', userSchema);
+*/
