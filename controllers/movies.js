@@ -48,7 +48,6 @@ router.put('/:movieId/edit', async (req ,res) => {
             req.body,
             { new: true }
         );
-
         updatedMovie._doc.author = req.user;
         res.status(200).json(updatedMovie);
     } catch (error) {
@@ -94,7 +93,8 @@ router.post('/:movieId', async (req, res) => {
 // returns all reviews under a movie
 router.get('/:movieId', async (req, res) => {
     try {
-        const movie = await Movie.findById(req.params.movieId).populate('reviews.author');
+        const movie = await Movie.findById(req.params.movieId).populate('author');
+        console.log(movie)
         const reviews = movie.reviews;
         res.status(200).json(movie);
     } catch (error) {
@@ -157,7 +157,7 @@ router.delete('/:movieId/:reviewId', async (req, res) => {
     }
 });
 //Post Comment
-router.post('/:movieId/:reviewId/comments', async (req, res) => {
+router.post('/:movieId/:reviewId/comments/:commentId', async (req, res) => {
     try {
         req.body.author = req.user._id;
         const movie = await Movie.findById(req.params.movieId);
