@@ -107,9 +107,11 @@ router.get('/:movieId', async (req, res) => {
 // returns a particular review based on a particular reviewId
 router.get('/:movieId/:reviewId', async (req, res) => {
     try {
-        const movie = await Movie.findById(req.params.movieId).populate('reviews.author');
-        const reviews = movie.reviews;
-        res.status(200).json(movie);
+
+        const movie = await Movie.findById(req.params.movieId).populate('reviews.author', 'reviews.comments.author');
+        const review = movie.reviews.id(req.params.reviewId);
+        res.status(200).json(review);
+
     } catch (error) {
         console.log(error);
         res.status(500).json(error)
@@ -154,7 +156,7 @@ router.delete('/:movieId/:reviewId', async (req, res) => {
         res.status(500).json(error);    
     }
 });
-
+//Post Comment
 router.post('/:movieId/:reviewId/comments', async (req, res) => {
     try {
         req.body.author = req.user._id;
