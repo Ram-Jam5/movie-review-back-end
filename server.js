@@ -10,7 +10,7 @@ const profilesRouter = require('./controllers/profiles');
 const moviesRouter = require('./controllers/movies');
 
 mongoose.connect(process.env.MONGODB_URI);
-
+const PORT = process.env.PORT
 mongoose.connection.on('connected', () => {
     console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
 });
@@ -25,6 +25,6 @@ app.use('/users', usersRouter);
 app.use('/profiles', profilesRouter);
 app.use('/movies', moviesRouter);
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
     console.log('The express app is ready!');
 });
