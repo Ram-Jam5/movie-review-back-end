@@ -57,6 +57,27 @@ const movieSchema = new mongoose.Schema(
         { timestamps: true }
 );
 
-const Movie = mongoose.model('Movie', movieSchema);
+const userSchema = new mongoose.Schema({
+    username: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    hashedPassword: {
+        type: String,
+        required: true
+    },
+    userReviews: [reviewSchema],
+    userComments: [commentSchema],
+});
 
-module.exports = Movie;
+userSchema.set('toJSON', {
+    transform: (document, returnedObject) => {
+        delete returnedObject.hashedPassword;
+    }
+});
+
+const Movie = mongoose.model('Movie', movieSchema);
+const User = mongoose.model('User', userSchema);
+
+module.exports = { Movie, User };

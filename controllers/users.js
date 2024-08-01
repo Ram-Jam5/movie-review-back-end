@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const User = require('../models/user');
+const { User } = require('../models/movie');
 const jwt = require('jsonwebtoken');
 
 
@@ -20,6 +20,7 @@ router.post('/signup', async (req, res) => {
             hashedPassword: bcrypt.hashSync(req.body.password, SALT_LENGTH)
         })
         const token = jwt.sign({ username: user.username, _id: user._id }, process.env.JWT_SECRET);
+        console.log(user); // CONSOLE LOG
         res.status(201).json({ user, token });
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -46,6 +47,16 @@ router.get('/', async (req, res) => {
             .populate('username')
             .sort({ createdAt: 'desc' });
         res.status(200).json(users);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+router.get('/:userId', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.userId);
+        console.log(user);
+        res.status(200).json(user);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
