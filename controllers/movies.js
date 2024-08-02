@@ -107,25 +107,7 @@ router.get('/:movieId', async (req, res) => {
         res.status(500).json(error);
     }
 })
-// Create Review
-router.post('/:movieId/reviews', async (req, res) => {
-    try {
-        req.body.author = req.user._id;
-        const movie = await Movie.findById(req.params.movieId); // find Movie
-        const user = await User.findById(req.body.author); // find user
-        movie.reviews.push(req.body);
-        await movie.save();
-        const newReview = movie.reviews[movie.reviews.length - 1];
-        newReview._doc.author = req.user;
-        user.userReviews.push(newReview); // push in to userReviews
-        await user.save();
-        console.log(user); // CONSOLE LOG
-        res.status(201).json(newReview);
-    } catch (error) {
-        console.log(error);
-        res.status(500).json(error);
-    }
-})
+
 
 
 
@@ -140,7 +122,7 @@ router.get('/:movieId/:reviewId', async (req, res) => {
 
         const movie = await Movie.findById(req.params.movieId).populate('reviews.author', 'reviews.comments.author');
         const review = movie.reviews.id(req.params.reviewId);
-        res.status(200).json(movie);
+        res.status(200).json(review);
 
     } catch (error) {
         console.log(error);
