@@ -6,7 +6,8 @@ const commentSchema = new mongoose.Schema(
             type: String,
             required: true
           },
-          author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+        author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        reviewId: { type: mongoose.Schema.Types.ObjectId }
     },
     { timestamps: true }
 );
@@ -25,7 +26,8 @@ const reviewSchema = new mongoose.Schema(
             type: String,
         },
         author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-        comments: [commentSchema]
+        comments: [commentSchema],
+        movieId: { type: mongoose.Schema.Types.ObjectId }
     },
     { timestamps:true }
 );
@@ -52,7 +54,7 @@ const movieSchema = new mongoose.Schema(
             required: true,
         },
         author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-        reviews: [reviewSchema],
+        reviews: [reviewSchema]
         },
         { timestamps: true }
 );
@@ -68,7 +70,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     userReviews: [reviewSchema],
-    userComments: [commentSchema],
+    userComments: [commentSchema]
 });
 
 userSchema.set('toJSON', {

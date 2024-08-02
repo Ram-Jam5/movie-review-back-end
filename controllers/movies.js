@@ -77,6 +77,7 @@ router.delete('/:movieId', async (req, res) => {
 router.post('/:movieId', async (req, res) => {
     try {
         req.body.author = req.user._id;
+        req.body.movieId = req.params.movieId;
         const movie = await Movie.findById(req.params.movieId); // find Movie
         const user = await User.findById(req.body.author); // find user
         movie.reviews.push(req.body);
@@ -194,9 +195,10 @@ router.delete('/:movieId/:reviewId', async (req, res) => {
     }
 });
 //Post Comment
-router.post('/:movieId/:reviewId/comments/:commentId', async (req, res) => {
+router.post('/:movieId/:reviewId/comments', async (req, res) => { // removed commentId at end of URL
     try {
         req.body.author = req.user._id;
+        req.body.reviewId = req.params.reviewId;
         const movie = await Movie.findById(req.params.movieId);
         const review = movie.reviews.id(req.params.reviewId)
         const user = await User.findById(req.body.author); // find user
