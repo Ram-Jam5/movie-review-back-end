@@ -108,6 +108,13 @@ router.get('/:movieId', async (req, res) => {
     }
 })
 
+
+
+
+
+
+
+
 //SHOW REVIEW
 // returns a particular review based on a particular reviewId
 router.get('/:movieId/:reviewId', async (req, res) => {
@@ -124,7 +131,7 @@ router.get('/:movieId/:reviewId', async (req, res) => {
 })
 
 // PUT REVIEW
-router.put('/:movieId/:reviewId', async (req ,res) => {
+router.put('/:movieId/:reviewId/edit', async (req ,res) => {
     try {
         const movie = await Movie.findById(req.params.movieId);
         const review = movie.reviews.id(req.params.reviewId);
